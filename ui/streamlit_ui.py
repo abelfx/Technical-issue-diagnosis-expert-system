@@ -13,7 +13,7 @@ def run_ui():
     # Sidebar for instructions
     with st.sidebar:
         st.header("Instructions")
-        st.info("Select the symptoms you are observing. The engine uses forward-chaining to determine the root cause.")
+        st.info("Select symptoms. The Hybrid Engine uses Forward and Backward chaining with Fuzzy logic to diagnose.")
         if st.button("Reset Session"):
             st.rerun()
 
@@ -24,7 +24,7 @@ def run_ui():
         "Search or select symptoms below:",
         options=FACTS,
         format_func=lambda x: x.replace("_", " ").capitalize(),
-        help="Select all conditions that apply to the hardware."
+        help="Select all conditions that apply to the current hardware state."
     )
 
     st.markdown("---")
@@ -35,7 +35,8 @@ def run_ui():
             st.warning("Please select at least one symptom to begin.")
         else:
             service = DiagnosisService()
-            results, fired_rules = service.diagnose(set(selected_symptoms))
+            # Updated to receive results, fired_rules, and the new trace_log
+            results, fired_rules, trace_log = service.diagnose(set(selected_symptoms))
 
             if results:
                 st.subheader("Step 2: Analysis Results")
@@ -46,7 +47,9 @@ def run_ui():
                         
                         # PRIORITY & CONFIDENCE COLUMN
                         with col1:
-                            st.metric(label="Confidence", value=f"{int(r['confidence']*100)}%")
+                            # Fuzzy Logic Score visualization
+                            conf_val = r['confidence']
+                            st.metric(label="Certainty Factor", value=f"{int(conf_val*100)}%")
                             
                             # Visual Priority Label
                             p_val = r.get('priority', 3)
@@ -55,7 +58,6 @@ def run_ui():
                         
                         # ISSUE DISPLAY COLUMN
                         with col2:
-                            # Color coding the header based on Priority
                             if p_val == 1:
                                 st.error(f"**Detected Issue:** {r['issue'].replace('_', ' ').title()}")
                             elif p_val == 2:
@@ -63,20 +65,29 @@ def run_ui():
                             else:
                                 st.info(f"**Detected Issue:** {r['issue'].replace('_', ' ').title()}")
                             
-                        # SOLUTION EXPANDER
                         with st.expander("View Recommended Solution", expanded=(p_val == 1)):
-                            # Markdown handles your 1. 2. 3. structure perfectly
                             st.markdown(r['solution'])
                     st.divider()
 
-                # Explanation Engine Section
-                st.subheader("Step 3: Logical Explanation")
-                with st.expander("Show Inference Path"):
-                    explanations = explain(fired_rules)
-                    for e in explanations:
-                        st.write(f"{e}")
+                # --- IMPROVEMENT: LOGGING & RULE TRACING ---
+                st.subheader("Step 3: Intelligence & Trace Report")
+                
+                col_exp, col_log = st.columns(2)
+                
+                with col_exp:
+                    with st.expander("Show Logical Inference Path"):
+                        explanations = explain(fired_rules)
+                        for e in explanations:
+                            st.write(f"✅ {e}")
+                
+                with col_log:
+                    with st.expander("Show Raw Engine Trace (Debugging)"):
+                        # This shows your Backward Chaining and Fuzzy evaluations
+                        for entry in trace_log:
+                            st.code(entry, language="bash")
+                            
             else:
-                st.error("Inconclusive: No rules matched the provided symptoms.")
+                st.error("Inconclusive: No rules matched. The Engine could not prove any critical hypothesis.")
 
 if __name__ == "__main__":
     run_ui()
