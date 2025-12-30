@@ -1,5 +1,3 @@
-# core/inference_engine.py
-
 class InferenceEngine:
     def __init__(self, rules):
         self.rules = rules

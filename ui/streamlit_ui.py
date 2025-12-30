@@ -78,7 +78,7 @@ def run_ui():
                     with st.expander("Show Logical Inference Path"):
                         explanations = explain(fired_rules)
                         for e in explanations:
-                            st.write(f"✅ {e}")
+                            st.write(f"{e}")
                 
                 with col_log:
                     with st.expander("Show Raw Engine Trace (Debugging)"):
