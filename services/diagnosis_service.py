@@ -3,13 +3,8 @@ from core.inference_engine import InferenceEngine
 from domain.rules import RULES
 from domain.solutions import SOLUTIONS
 
-# services/diagnosis_service.py
-
 class DiagnosisService:
     def diagnose(self, selected_facts):
-        from core.working_memory import WorkingMemory
-        from core.inference_engine import InferenceEngine
-        from domain.rules import RULES
         
         wm = WorkingMemory()
         for fact in selected_facts:

@@ -2,7 +2,7 @@ class InferenceEngine:
     def __init__(self, rules):
         self.rules = rules
         self.fired_rules = []
-        self.trace_log = [] # 3️⃣ Adding Rule Tracing
+        self.trace_log = [] # Adding Rule Tracing
 
     def forward_chain(self, working_memory):
         self.trace_log.append("Starting Forward Chaining...")
@@ -22,7 +22,7 @@ class InferenceEngine:
         return new_fired
 
     def backward_chain(self, goal, working_memory):
-        """1️⃣ Backward Chaining: Can we prove this goal?"""
+        """Backward Chaining: Can we prove this goal?"""
         self.trace_log.append(f"Attempting to prove goal: {goal}")
         
         # Base case: we already know it
