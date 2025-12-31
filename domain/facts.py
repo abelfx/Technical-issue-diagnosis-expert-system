@@ -10,7 +10,7 @@ FACTS = [
 
 # Hardware & Drivers
 "new_ram_installed", "usb_not_recognized", "works_in_other_port",
-"system_files_missing", "driver_error_icon",
+"system_files_missing", "driver_error_icon", "smell_of_burning",
 
 # Connectivity
 "wifi_not_working", "other_devices_work", "ethernet_works", 

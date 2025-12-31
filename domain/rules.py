@@ -87,5 +87,23 @@ RULES = [
         "conclusion": "signal_interference",
         "confidence": 0.70,
         "priority": 3
+    },
+    {
+        "conditions": ["total_psu_failure", "smell_of_burning"],
+        "conclusion": "imminent_fire_risk",
+        "priority": 1,
+        "confidence": 1.0
+    },
+    {
+        "conditions": ["pc_turns_on", "sudden_shutdown"],
+        "conclusion": "intermediate_power_instability",
+        "confidence": 0.45,  # <--- THIS IS KEY (Below 0.5 threshold)
+        "priority": 2
+    },
+    {
+        "conditions": ["intermediate_power_instability", "beep_codes_heard"],
+        "conclusion": "motherboard_voltage_regulator_failure",
+        "confidence": 0.95,
+        "priority": 1
     }
 ]
