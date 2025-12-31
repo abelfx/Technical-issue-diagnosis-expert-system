@@ -2,6 +2,8 @@ import streamlit as st
 from domain.facts import FACTS
 from services.diagnosis_service import DiagnosisService
 from core.explanation_engine import explain
+import copy
+from domain.rules import RULES as BASE_RULES
 
 def run_ui():
     # Page Config for a professional look
@@ -18,7 +20,7 @@ def run_ui():
             st.rerun()
 
     # Organized Input Section
-    st.subheader("Step 1: Identify Symptoms")
+    st.subheader("Identify Symptoms")
     
     selected_symptoms = st.multiselect(
         "Search or select symptoms below:",
@@ -34,12 +36,16 @@ def run_ui():
         if not selected_symptoms:
             st.warning("Please select at least one symptom to begin.")
         else:
-            service = DiagnosisService()
+            # Ensure rules are initialized in session state
+            if "rules" not in st.session_state:
+              
+                st.session_state.rules = copy.deepcopy(BASE_RULES)
+            service = DiagnosisService(st.session_state.rules)
             # Updated to receive results, fired_rules, and the new trace_log
             results, fired_rules, trace_log = service.diagnose(set(selected_symptoms))
 
             if results:
-                st.subheader("Step 2: Analysis Results")
+                st.subheader("Diagnosis Complete")
                 
                 for r in results:
                     with st.container():
@@ -70,7 +76,7 @@ def run_ui():
                     st.divider()
 
                 # --- IMPROVEMENT: LOGGING & RULE TRACING ---
-                st.subheader("Step 3: Intelligence & Trace Report")
+                st.subheader("Intelligence & Trace Report")
                 
                 col_exp, col_log = st.columns(2)
                 
